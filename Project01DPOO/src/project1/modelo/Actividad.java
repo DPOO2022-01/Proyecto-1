@@ -19,6 +19,7 @@ public class Actividad {
 		this.titulo=titulo;
 		this.descripcion=descripcion;
 		this.tipo=tipo;
+		this.creador=null;
 	}
 	//Req funcionales
 	
