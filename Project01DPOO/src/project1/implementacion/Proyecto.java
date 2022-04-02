@@ -1,24 +1,38 @@
 package project1.implementacion;
 
-import project1.modelo.ParticipanteInicial;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import project1.modelo.*;
 
 public class Proyecto {
 	//Atributos
-	private String nombre;
-	private String fechaInicio;
-	private String fechaFinal;
-	private String descripcion;
+	private Date fechaInicio;
+	private Date fechaFinal;
 	private ParticipanteInicial fundador;
+	private ArrayList<Actividad> actividades;
+	private ArrayList<Participante> participantes;
+	public final static SimpleDateFormat formato=new SimpleDateFormat("dd/HH/mm" );
 	//Constructor
-	public Proyecto(String nombre, String fechaI,String fechaF,String descripcion) 
+	public Proyecto() 
 	{
-		this.nombre=nombre;
-		fechaInicio=fechaI;
-		fechaFinal=fechaF;
-		this.descripcion=descripcion;
+		this.actividades=new ArrayList<Actividad>();
+		this.participantes=new ArrayList<Participante>();
 	}
 	//Req funcionales
 	//Req no funcionales
+	public Date setFechaInicial(String fechaI) throws ParseException 
+	{
+		this.fechaInicio=formato.parse(fechaI);
+		return fechaInicio;
+	}
+	public Date setFechaFinal(String fechaF) throws ParseException 
+	{
+		this.fechaFinal=formato.parse(fechaF);
+		return fechaFinal;
+	}
 	public ParticipanteInicial getFundador() 
 	{
 		return this.fundador;
@@ -27,8 +41,12 @@ public class Proyecto {
 	{
 		this.fundador=fundador;
 	}
-	public String getDescripcion() 
+	public void addActividad(Actividad actividad) 
 	{
-		return this.descripcion;
+		this.actividades.add(actividad);
+	}
+	public void addParticipantes(Participante participante) 
+	{
+		this.participantes.add(participante);
 	}
 }
