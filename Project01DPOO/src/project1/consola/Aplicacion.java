@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,14 +14,16 @@ import project1.implementacion.Proyecto;
 import project1.modelo.*;
 
 public class Aplicacion {
-	//Atributos
+	private static Map<String, Actividad> listActividades = null; //atributo de la clase, no obj
+	private static Map<String, Actividad> userActividad = null;
 	//Constructor
 	//Req funcionales
 	public static void main(String[] argumentos) throws ParseException 
 	{
 		//Interacción Menu - usuario 
 		System.out.println("Bienvenido a Thuesday.com\n");
-		
+		Map<String, Actividad> listActividades=getActividades();
+		Map<String, Actividad> userActividad = getUserActividades();
 		boolean continuar = true;
 		while (continuar)
 		{
@@ -32,7 +35,7 @@ public class Aplicacion {
 				{
 					System.out.println("Opción 1");
 					try {
-						cargarDatos();
+						cargarDatos(listActividades);
 					} catch (FileNotFoundException e) 
 					{
 						e.printStackTrace();
@@ -43,12 +46,12 @@ public class Aplicacion {
 				}
 				else if (opcion_seleccionada == 2) 
 				{
-					registrarUsuario();
+					registrarUsuario(userActividad);
 					System.out.println("Opción 2");
 				}	
 				else if (opcion_seleccionada == 3) 
 				{
-					crearRegistro();
+					crearRegistro(userActividad);
 					System.out.println("Opción 3");
 				}
 				else if (opcion_seleccionada == 4) 
@@ -72,27 +75,44 @@ public class Aplicacion {
 		}
 	}
 	
-	private static void crearRegistro() {
-		// TODO Auto-generated method stub
+	private static void crearRegistro(Map<String, Actividad> userActividad) throws ParseException {
+		String userName=input("Ingrese su nombre: ");
+		String fechaInicio=input("Ingrese la fecha de inicio en el formato dd/hh/mm: ");
+		String fechaFin=input("Ingrese la fecha actual en el formato dd/hh/mm: ");
+		Actividad userAct = userActividad.get(userName);
+		userAct.setFechaFinal(fechaFin);
+		userAct.setFechaInicial(fechaInicio);
+		Participante paticipanteAct = userAct.getCreador();
+		Registro registroNuevo= new Registro(fechaInicio, fechaFin,userAct);
+		paticipanteAct.addRegistro(registroNuevo);
+		System.out.println("Registrocreado");
 		
 	}
-
-	private static void registrarUsuario() 
+	private static void registrarUsuario(Map<String, Actividad> userActividad) 
 	{
 		String userName=input("Ingrese su nombre: ");
 		String userAdr=input("Ingrese su correo electrónico: ");
-		int tieneActividad=Integer.parseInt(input("Ingrese 1 si tiene una actividad asignada, de lo contrario ingrese 0, es decir, tiene asignado el proyecto: "));
+		int tieneActividad=Integer.parseInt(input("Ingrese 1 si tiene una actividad asignada, de lo contrario ingrese 0 para escoger una actividad: "));
 		
 		if (tieneActividad==1) 
 		{
-			Participante participante = new Participante(userName,userAdr);
+			if(userActividad.containsKey(userName)) 
+			{
+				Actividad actividadAsignada=userActividad.get(userName);
+				System.out.println(userName+" tiene asignada la actividad "+actividadAsignada.getTitle());
+			}
+			else 
+			{
+				System.out.println("\nUsted no tienen una actividad asignada aún, a continuación se le asignará una.");
+				asignarActividad(userName, userAdr, userActividad.values());
+			}
 		}
 		else 
 		{
-			ParticipanteInicial participantei = new ParticipanteInicial(userName,userAdr);
+			System.out.println("\nUsted no tienen una actividad asignada aún, a continuación se le asignará una");
+			asignarActividad(userName, userAdr, userActividad.values());
 		}
 	}
-
 	public static void mostrarMenu() 
 	{
 		System.out.println("\nOpciones de la aplicación\n");
@@ -100,22 +120,28 @@ public class Aplicacion {
 		System.out.println("2. Registrar Usuario");
 		System.out.println("3. Crear Registro en una Actividad");
 	}
-	private static void cargarDatos() throws FileNotFoundException, IOException, ParseException 
+	private static void cargarDatos(Map<String, Actividad> listActividades) throws FileNotFoundException, IOException, ParseException 
 	{
+		
 		System.out.println("\n" + "Cargar un archivo de actividades" + "\n");
 		String archivo = input("Por favor ingrese el nombre del archivo CSV con las actividades: ");
-		cargarArchivos(archivo);
+		cargarArchivos(archivo,listActividades);
 		System.out.println("Se cargó el archivo " + archivo + " con información de actividades.");
 	}
-	public static void cargarArchivos(String ruta) throws ParseException 
+	public static void cargarArchivos(String ruta,Map<String, Actividad> listActividades) throws ParseException 
 	{
 		//Se define en qué forma se guarda la información
 		
 		//crear proyecto
 		Proyecto proyect = new Proyecto();
-		//mapa de actividades filtradas por titulo
-		Map<String, Actividad> listActividades=new HashMap<String, Actividad>();
-		
+		//crear Participante inicial, pues este es quien inicializa el proyecto por default
+		String userName=input("Ingrese su nombre: ");
+		String userAdr=input("Ingrese su correo electrónico: ");
+		ParticipanteInicial participanteI= new ParticipanteInicial(userName,userAdr);
+		participanteI.setProyecto(proyect);
+		proyect.setFundador(participanteI);
+		//mapa de actividades filtradas por titulo por entrada
+
 		BufferedReader br;
 		String fechaInicial="";
 		try {
@@ -126,15 +152,38 @@ public class Aplicacion {
 			      Actividad actividad= new Actividad(substr[0],substr[1],substr[2]);
 			      fechaInicial=input("Ingrese la fecha en formato dd/HH/mm (dia/hora/min)");
 			      actividad.setFechaInicial(fechaInicial);
+			      actividad.setFechaFinal("00/00/00"); //fecha default para la primer vez que se crea una actividad
 			      //añadir obj al Map
 			      listActividades.put(actividad.getTitle(), actividad);
 			      //añadir obj a la lista de actividades que tiene un proyecto
 			      proyect.addActividad(actividad);
 			}
-			System.out.println("Información cargada");
+			System.out.println("Información cargada corre");
 		} catch (IOException e) {e.printStackTrace();}
 	}
-
+	public static Map<String, Actividad> getActividades() 
+	{
+		listActividades=new HashMap<String, Actividad>();
+		return listActividades;
+	}
+	public static Map<String, Actividad> getUserActividades() 
+	{
+		userActividad=new HashMap<String, Actividad>();
+		return userActividad;
+	}
+	private static void asignarActividad(String nombre, String correo, Collection<Actividad> actividades) 
+	{
+		for(Actividad cadaAct: actividades) 
+		{
+			if (cadaAct.getCreador()==null)
+			{
+				Participante participanteNuevo = new Participante(nombre, correo);
+				cadaAct.setCreador(participanteNuevo);
+				System.out.println(nombre+" ha sido asigando a la actividad ");
+				break;
+			}
+		}
+	}
 	public static String input(String mensaje)
 	{
 		try
