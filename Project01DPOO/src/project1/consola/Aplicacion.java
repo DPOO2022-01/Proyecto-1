@@ -20,6 +20,7 @@ public class Aplicacion {
 	static ArrayList<Proyecto> listaProyectos = new ArrayList<Proyecto>(); 
 	//Constructor
 	//Req funcionales
+	
 	public static void main(String[] argumentos) throws ParseException 
 	{
 		//Interacción Menu - usuario 
@@ -57,7 +58,7 @@ public class Aplicacion {
 							
 						}
 						int proyecto1 = Integer.parseInt(input("Por favor seleccione un proyecto: "));
-						proyectoSeleccionado = (listaProyectos.get(proyecto1)).getNombre();
+						proyectoSeleccionado = (listaProyectos.get(proyecto1-1)).getNombre();
 					}
 				}
 				else if (opcion_seleccionada == 2) 
