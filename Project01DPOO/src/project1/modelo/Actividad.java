@@ -2,6 +2,7 @@ package project1.modelo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Actividad {
@@ -13,6 +14,7 @@ public class Actividad {
 	private Date horaInicio;
 	private Date horaFin;
 	private Participante creador;
+	private ArrayList<Registro> registros;
 	//Constructor
 	public Actividad(String titulo, String descripcion, String tipo) 
 	{
@@ -22,6 +24,11 @@ public class Actividad {
 		this.creador=null;
 	}
 	//Req funcionales
+	
+	public ArrayList<Registro> getReporte()
+	{
+		return this.registros;
+	}
 	
 	//Req no funcionales
 	public Participante getCreador() 
