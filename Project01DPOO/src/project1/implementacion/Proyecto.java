@@ -9,6 +9,7 @@ import project1.modelo.*;
 
 public class Proyecto {
 	//Atributos
+	private String nombre;
 	private Date fechaInicio;
 	private Date fechaFinal;
 	private ParticipanteInicial fundador;
