@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ import project1.modelo.*;
 public class Aplicacion {
 	private static Map<String, Actividad> listActividades = null; //atributo de la clase, no obj
 	private static Map<String, Actividad> userActividad = null;
+	static ArrayList<Proyecto> listaProyectos = new ArrayList<Proyecto>(); 
 	//Constructor
 	//Req funcionales
 	public static void main(String[] argumentos) throws ParseException 
@@ -25,15 +27,42 @@ public class Aplicacion {
 		Map<String, Actividad> listActividades=getActividades();
 		Map<String, Actividad> userActividad = getUserActividades();
 		boolean continuar = true;
+		String proyectoSeleccionado = "No ha seleccionado ningun proyecto.";
 		while (continuar)
 		{
 			try
 			{
-				mostrarMenu();
-				int opcion_seleccionada =Integer.parseInt(input("Por favor seleccione una opción: "));
-				if (opcion_seleccionada == 1) 
+				mostrarMenu(proyectoSeleccionado);
+				int opcion_seleccionada = Integer.parseInt(input("Por favor seleccione una opción: "));
+				if (opcion_seleccionada == 1)
 				{
-					System.out.println("Opción 1");
+					System.out.println("\n");
+					System.out.println("1. Crear un nuevo proyecto.");
+					System.out.println("2. Seleccionar un proyecto existente.\n");
+					int opcion_proyecto = Integer.parseInt(input("Por favor seleccione una opción: "));
+					if (opcion_proyecto == 1)
+					{
+						System.out.println("Ingrese el nombre del proyecto: ");
+						String nombreProyecto = input(" ");
+						Proyecto proyectoActual = new Proyecto();
+						proyectoActual.setNombre(nombreProyecto);
+						proyectoSeleccionado = proyectoActual.getNombre();
+						listaProyectos.add(proyectoActual);
+					}
+					else if (opcion_proyecto == 2)
+					{
+						for(int i=0;i<listaProyectos.size();i++) 
+						{
+							System.out.println((i+1)+". "+(listaProyectos.get(i)).getNombre());
+							
+						}
+						int proyecto1 = Integer.parseInt(input("Por favor seleccione un proyecto: "));
+						proyectoSeleccionado = (listaProyectos.get(proyecto1)).getNombre();
+					}
+				}
+				else if (opcion_seleccionada == 2) 
+				{
+					System.out.println("Opción 2");
 					try {
 						cargarDatos(listActividades);
 					} catch (FileNotFoundException e) 
@@ -44,21 +73,21 @@ public class Aplicacion {
 						e.printStackTrace();
 					}
 				}
-				else if (opcion_seleccionada == 2) 
-				{
-					registrarUsuario(userActividad);
-					System.out.println("Opción 2");
-				}	
 				else if (opcion_seleccionada == 3) 
 				{
-					crearRegistro(userActividad);
+					registrarUsuario(userActividad);
 					System.out.println("Opción 3");
-				}
+				}	
 				else if (opcion_seleccionada == 4) 
 				{
+					crearRegistro(userActividad);
 					System.out.println("Opción 4");
 				}
-				else if (opcion_seleccionada ==5)
+				else if (opcion_seleccionada == 5) 
+				{
+					System.out.println("Opción 5");
+				}
+				else if (opcion_seleccionada == 6)
 				{
 					System.out.println("Saliendo de la aplicación ...");
 					continuar = false;
@@ -85,7 +114,7 @@ public class Aplicacion {
 		Participante paticipanteAct = userAct.getCreador();
 		Registro registroNuevo= new Registro(fechaInicio, fechaFin,userAct);
 		paticipanteAct.addRegistro(registroNuevo);
-		System.out.println("Registrocreado");
+		System.out.println("Registro creado");
 		
 	}
 	private static void registrarUsuario(Map<String, Actividad> userActividad) 
@@ -113,12 +142,16 @@ public class Aplicacion {
 			asignarActividad(userName, userAdr, userActividad.values());
 		}
 	}
-	public static void mostrarMenu() 
+	public static void mostrarMenu(String proyectoSleccionado) 
 	{
+		System.out.println("\nPROYECTO ACTUAL: "+proyectoSleccionado);
 		System.out.println("\nOpciones de la aplicación\n");
-		System.out.println("1. Cargar Actividades");
-		System.out.println("2. Registrar Usuario");
-		System.out.println("3. Crear Registro en una Actividad");
+		System.out.println("1. Seleccionar/Crear proyecto");
+		System.out.println("2. Cargar Actividades");
+		System.out.println("3. Registrar Usuario");
+		System.out.println("4. Crear Registro en una Actividad");
+		System.out.println("5. Consultar actividades de un participante");
+		System.out.println("6. Salir de la aplicación");
 	}
 	private static void cargarDatos(Map<String, Actividad> listActividades) throws FileNotFoundException, IOException, ParseException 
 	{

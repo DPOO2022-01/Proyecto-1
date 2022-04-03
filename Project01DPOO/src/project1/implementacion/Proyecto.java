@@ -24,6 +24,14 @@ public class Proyecto {
 	}
 	//Req funcionales
 	//Req no funcionales
+	public String getNombre()
+	{
+		return this.nombre;
+	}
+	public void setNombre(String nombre)
+	{
+		this.nombre = nombre;
+	}
 	public Date setFechaInicial(String fechaI) throws ParseException 
 	{
 		this.fechaInicio=formato.parse(fechaI);
