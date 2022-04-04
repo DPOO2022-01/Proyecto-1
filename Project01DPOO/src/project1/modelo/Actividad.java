@@ -14,6 +14,7 @@ public class Actividad {
 	private Date horaInicio;
 	private Date horaFin;
 	private Participante creador;
+	private Boolean tieneCreador;
 	private ArrayList<Registro> registros;
 	//Constructor
 	public Actividad(String titulo, String descripcion, String tipo) 
@@ -22,6 +23,8 @@ public class Actividad {
 		this.descripcion=descripcion;
 		this.tipo=tipo;
 		this.creador=null;
+		this.tieneCreador=false;
+		this.registros=new ArrayList<Registro>();
 	}
 	//Req funcionales
 	
@@ -56,6 +59,22 @@ public class Actividad {
 	public String getTitle() 
 	{
 		return this.titulo;
+	}
+	public ArrayList<Registro> getRegistros()
+	{
+		return this.registros;
+	}
+	public String getTipo() 
+	{
+		return this.tipo;
+	}
+	public Boolean getTieneCreador() 
+	{
+		return this.tieneCreador;
+	}
+	public void setTieneCreador(Boolean f) 
+	{
+		this.tieneCreador=f;
 	}
 	@SuppressWarnings("deprecation") //manejo de error extraño
 	public int calcularDemora(Date fecha1, Date fecha2) 
