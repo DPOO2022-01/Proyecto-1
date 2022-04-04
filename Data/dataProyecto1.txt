@@ -1,0 +1,6 @@
+Act1;Se carga la informacion de un programa;Documentacion
+Act2;Se manda recibo de pago al usuario;Implementacion
+Act3;Se realizaron pruebas sobre la base de datos;Pruebas
+Act4;Se analizaron los mejores metodos de seguridad de datos;Investigacion
+Act5;Probar la plataforma de pagos online;Pruebas
+Act6;Correr servidores paralelos;Implementacion
